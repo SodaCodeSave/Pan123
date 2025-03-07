@@ -1,3 +1,7 @@
+# Python Pan123
+# 在使用前，请去123云盘开放平台(https://www.123pan.cn/developer)申请使用权限
+# 在邮箱中查询client_id和client_secret，并使用get_access_token函数获取访问令牌
+
 import requests
 import json
 
