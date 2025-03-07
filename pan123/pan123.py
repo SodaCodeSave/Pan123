@@ -16,25 +16,6 @@ class AccessTokenError(Exception):
         super().__init__(f"错误的access_token，请检查后重试\n{self.r}")
 
 def get_access_token(client_id:str, client_secret:str, base_url:str="https://open-api.123pan.com", header:dict=None):
-    """
-    获取访问令牌。
-
-    此函数通过POST请求向指定的API端点获取访问令牌。它需要客户端ID和客户端密钥作为参数，
-    并可选地接受基础URL和自定义头部信息。
-
-    参数:
-    - client_id (str): 客户端ID。
-    - client_secret (str): 客户端密钥。
-    - base_url (str, 可选): API的基础URL，默认为"https://open-api.123pan.com"。
-    - header (dict, 可选): 请求头部信息，默认包含"Content-Type"和"Platform"字段。
-
-    返回:
-    - str: 成功时返回访问令牌字符串。
-
-    异常:
-    - ClientKeyError: 当API返回的code不为0时抛出。
-    - HTTPError: 当HTTP响应状态码不是200时抛出。
-    """
     # 检查header是否传入，如未传入则使用默认值
     if header is None:
         header = {"Content-Type": "application / json", "Platform": "open_platform"}
@@ -70,11 +51,6 @@ def get_access_token(client_id:str, client_secret:str, base_url:str="https://ope
 
 class Pan123:
     def __init__(self, access_token:str):
-        """
-        初始化函数，设置API的基础URL和通用请求头。
-
-        :param access_token: str 用户的访问令牌，用于API请求的身份验证。
-        """
         # 设置API请求的基础URL
         self.base_url = "https://open-api.123pan.com"
 
@@ -86,22 +62,6 @@ class Pan123:
         }
 
     def create_share(self, share_name:str, share_expire:int, file_id_list:list, share_pwd=None):
-        """
-        创建分享链接。
-
-        参数:
-        - share_name (str): 分享的名称。
-        - share_expire (int): 分享的过期时间。
-        - file_id_list (list): 需要分享的文件ID列表。
-        - share_pwd (str, 可选): 分享的密码，默认为None。
-
-        返回:
-        - dict: 包含分享ID、分享链接和分享密钥的字典。
-
-        异常:
-        - AccessTokenError: 如果接口返回的code不为0。
-        - HTTPError: 如果HTTP请求的状态码不是200。
-        """
         # 构建请求URL
         url = self.base_url + "/api/v1/share/create"
         # 准备请求数据
@@ -135,22 +95,6 @@ class Pan123:
             raise requests.HTTPError
     
     def share_list_info(self, shareIdList:list, trafficSwitch:bool=None, trafficLimitSwitch:bool=None, trafficLimit:int=None):
-        """
-        修改分享链接信息。
-
-        参数:
-        - shareIdList (list): 分享ID列表。
-        - trafficSwitch (bool, 可选): 免登录流量包开关 False 关闭免登录流量包 True 打开免登录流量包
-        - trafficLimitSwitch (bool, 可选): 流量限制开关，免登录流量包开关 False 关闭流量限制 True 打开流量限制
-        - trafficLimit (int, 可选): 流量限制，默认为None。
-
-        返回:
-        - 无
-
-        异常:
-        - AccessTokenError: 如果接口返回的code不为0。
-        - HTTPError: 如果HTTP请求的状态码不是200。
-        """
         # 构建请求URL
         url = self.base_url + "/api/v1/share/list/info"
         # 准备请求数据
@@ -190,21 +134,8 @@ class Pan123:
         else:
             # 如果HTTP响应状态码不是200，抛出HTTPError异常
             raise requests.HTTPError
-    def share_list(self, limit:int, lastShareId:int=None):
-        """
-        获取分享列表。
-    
-        参数:
-        - limit (int): 每页返回的分享数量，最大不超过100。
-        - lastShareId (int): 如果分页的话翻页查询时需要填写。
-    
-        返回:
-        - dict: 包含分享列表信息的字典。
         
-        异常:
-        - AccessTokenError: 如果接口返回的code不为0。
-        - HTTPError: 如果HTTP请求的状态码不是200。
-        """
+    def share_list(self, limit:int, lastShareId:int=None):
         # 构建请求的URL，将基础URL和分享列表信息的API路径拼接
         url = self.base_url + "/api/v1/share/list/info"
         # 准备请求数据，设置每页返回的分享数量
@@ -232,22 +163,6 @@ class Pan123:
             raise requests.HTTPError
         
     def file_list(self, parent_file_id:int, limit:int):
-        """
-        获取指定父文件夹下的文件列表。
-
-        通过发送GET请求到/api/v2/file/list接口，获取指定父文件夹下的一批文件信息。
-
-        参数:
-        - parent_file_id (int): 父文件夹的ID。
-        - limit (int): 最多返回的文件数量。
-
-        返回:
-        - list: 文件列表，每个文件的信息以字典形式表示。
-
-        异常:
-        - AccessTokenError: 如果接口返回的code不为0，则抛出AccessTokenError异常。
-        - HTTPError: 如果HTTP请求的响应状态码不是200，则抛出HTTPError异常。
-        """
         # 构造请求URL和参数
         url = self.base_url + "/api/v2/file/list"
         data = {
@@ -275,22 +190,6 @@ class Pan123:
             raise requests.HTTPError
 
     def file_mkdir(self, name:str, parent_id:int):
-        """
-        创建文件夹
-
-        通过发送GET请求到服务器，创建一个新文件夹
-
-        参数:
-        name (str): 要创建的文件夹的名称
-        parent_id (int): 新文件夹的父目录ID
-
-        返回:
-        新创建文件夹的相关信息，具体结构取决于服务器返回的数据
-
-        异常:
-        AccessTokenError: 当服务器返回的code不为0时抛出
-        HTTPError: 当HTTP响应状态码不是200时抛出
-        """
         # 构造请求URL和参数
         url = self.base_url + "/upload/v1/file/mkdir"
         data = {
@@ -312,6 +211,40 @@ class Pan123:
                 return rdata["data"]
             else:
                 # 如果code不为0，抛出AccessTokenError异常
+                raise AccessTokenError(rdata)
+        else:
+            # 如果HTTP响应状态码不是200，抛出HTTPError异常
+            raise requests.HTTPError
+    
+    def file_create(self, parentFileID:int, filename:str, etag:str, size:int, duplicate:int=None):
+        # 构造请求URL
+        url = self.base_url + "/upload/v1/file/create"
+        # 准备请求数据
+        data = {
+            "parentFileID": parentFileID,
+            # 文件名
+            "filename": filename,
+            # 文件的etag
+            "etag": etag,
+            # 文件大小
+            "size": size
+        }
+        # 如果传入了重复处理方式参数，则添加到请求数据中
+        if duplicate:
+            data["duplicate"] = duplicate
+        # 发送POST请求
+        r = requests.post(url, data=data, headers=self.header)
+        # 将响应内容解析为JSON格式
+        rdata = json.loads(r.text)
+
+        # 检查HTTP响应状态码
+        if r.status_code == 200:
+            # 检查API返回的code
+            if rdata["code"] == 0:
+                # 返回响应数据中的data部分
+                return rdata["data"]
+            else:
+                # 如果API返回码不为0，抛出AccessTokenError异常
                 raise AccessTokenError(rdata)
         else:
             # 如果HTTP响应状态码不是200，抛出HTTPError异常
