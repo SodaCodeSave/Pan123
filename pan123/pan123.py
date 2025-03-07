@@ -48,6 +48,19 @@ def get_access_token(client_id:str, client_secret:str, base_url:str="https://ope
         # 抛出HTTP错误异常
         raise requests.HTTPError
 
+def check_status_code(r):
+    # 检查HTTP响应状态码
+    if r.status_code == 200:
+        # 检查API返回的code
+        if json.loads(r.text)["code"] == 0:
+            # 返回响应数据中的data部分
+            return json.loads(r.text)["data"]
+        else:
+            # 如果API返回码不为0，抛出AccessTokenError异常
+            raise AccessTokenError(rdata)
+    else:
+        # 如果HTTP响应状态码不是200，抛出HTTPError异常
+        raise requests.HTTPError
 
 class Pan123:
     def __init__(self, access_token:str):
@@ -121,19 +134,7 @@ class Pan123:
         # 发送POST请求修改分享链接信息
         r = requests.put(url, data=data, headers=self.header)
         # 将响应内容解析为JSON格式
-        rdata = json.loads(r.text)
-        # 检查HTTP响应状态码
-        if r.status_code == 200:
-            # 检查接口返回的code
-            if rdata["code"] == 0:
-                # 返回分享ID、分享链接和分享密钥
-                return rdata["data"]
-            else:
-                # 如果接口返回的code不为0，抛出AccessTokenError异常
-                raise AccessTokenError(rdata)
-        else:
-            # 如果HTTP响应状态码不是200，抛出HTTPError异常
-            raise requests.HTTPError
+        return check_status_code(r)
         
     def share_list(self, limit:int, lastShareId:int=None):
         # 构建请求的URL，将基础URL和分享列表信息的API路径拼接
@@ -148,19 +149,7 @@ class Pan123:
         # 发送GET请求获取分享列表信息
         r = requests.get(url, data=data, headers=self.header)
         # 将响应内容解析为JSON格式
-        rdata = json.loads(r.text)
-        # 检查HTTP响应状态码是否为200
-        if r.status_code == 200:
-            # 检查接口返回的code是否为0
-            if rdata["code"] == 0:
-                # 如果code为0，返回包含分享列表信息的字典
-                return rdata["data"]
-            else:
-                # 如果code不为0，抛出AccessTokenError异常
-                raise AccessTokenError(rdata)
-        else:
-            # 如果HTTP响应状态码不是200，抛出HTTPError异常
-            raise requests.HTTPError
+        return check_status_code(r)
         
     def file_list(self, parent_file_id:int, limit:int):
         # 构造请求URL和参数
@@ -201,20 +190,7 @@ class Pan123:
         r = requests.get(url, data=data, headers=self.header)
 
         # 将响应内容解析为JSON格式
-        rdata = json.loads(r.text)
-
-        # 检查HTTP响应状态码
-        if r.status_code == 200:
-            # 检查服务器返回的code
-            if rdata["code"] == 0:
-                # 如果code为0，表示操作成功，返回数据
-                return rdata["data"]
-            else:
-                # 如果code不为0，抛出AccessTokenError异常
-                raise AccessTokenError(rdata)
-        else:
-            # 如果HTTP响应状态码不是200，抛出HTTPError异常
-            raise requests.HTTPError
+        return check_status_code(r)
     
     def file_create(self, parentFileID:int, filename:str, etag:str, size:int, duplicate:int=None):
         # 构造请求URL
@@ -235,17 +211,17 @@ class Pan123:
         # 发送POST请求
         r = requests.post(url, data=data, headers=self.header)
         # 将响应内容解析为JSON格式
-        rdata = json.loads(r.text)
-
-        # 检查HTTP响应状态码
-        if r.status_code == 200:
-            # 检查API返回的code
-            if rdata["code"] == 0:
-                # 返回响应数据中的data部分
-                return rdata["data"]
-            else:
-                # 如果API返回码不为0，抛出AccessTokenError异常
-                raise AccessTokenError(rdata)
-        else:
-            # 如果HTTP响应状态码不是200，抛出HTTPError异常
-            raise requests.HTTPError
+        return check_status_code(r)
+        
+    def get_upload_url(self, preuploadID:str, sliceNo:int):
+        # 构造请求URL
+        url = self.base_url + "/upload/v1/file/upload"
+        # 准备请求数据
+        data = {
+            "preuploadID": preuploadID,
+            "sliceNo": sliceNo
+        }
+        # 发送POST请求
+        r = requests.post(url, data=data, headers=self.header)
+        # 将响应内容解析为JSON格式
+        return check_status_code(r)
