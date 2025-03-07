@@ -6,9 +6,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4  # 更新到最新版本
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5  # 更新到最新版本
       with:
         python-version: '3.x'
     - name: Install dependencies
@@ -17,4 +17,9 @@ jobs:
         pip install build
     - name: Build package
       run: python -m build
-    # 移除发布步骤
+    - name: Upload build artifacts
+      # 修改为可用版本，这里假设 v4 是可用的
+      uses: actions/upload-artifact@v4
+      with:
+        name: python-package
+        path: dist/
