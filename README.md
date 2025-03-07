@@ -33,6 +33,8 @@ from pan123.pan123 import Pan123
 - ClientKeyError: 当API返回的code不为0时抛出。
 - HTTPError: 当HTTP响应状态码不是200时抛出。
 
+**注：获取后推荐将access_token存到安全的地方，如在同目录创建一个access_token.txt，需要时读取**
+
 ### Pan123 Client
 要使用123云盘开放平台，需要先创建一个Pan123的客户端
 

@@ -175,7 +175,7 @@ class Pan123:
                 data["trafficLimitSwitch"] = 0
 
         # 发送POST请求修改分享链接信息
-        r = requests.post(url, data=data, headers=self.header)
+        r = requests.put(url, data=data, headers=self.header)
         # 将响应内容解析为JSON格式
         rdata = json.loads(r.text)
         # 检查HTTP响应状态码
@@ -190,7 +190,47 @@ class Pan123:
         else:
             # 如果HTTP响应状态码不是200，抛出HTTPError异常
             raise requests.HTTPError
-
+    def share_list(self, limit:int, lastShareId:int=None):
+        """
+        获取分享列表。
+    
+        参数:
+        - limit (int): 每页返回的分享数量，最大不超过100。
+        - lastShareId (int): 如果分页的话翻页查询时需要填写。
+    
+        返回:
+        - dict: 包含分享列表信息的字典。
+        
+        异常:
+        - AccessTokenError: 如果接口返回的code不为0。
+        - HTTPError: 如果HTTP请求的状态码不是200。
+        """
+        # 构建请求的URL，将基础URL和分享列表信息的API路径拼接
+        url = self.base_url + "/api/v1/share/list/info"
+        # 准备请求数据，设置每页返回的分享数量
+        data = {
+            "limit": limit   
+        }
+        # 如果传入了lastShareId，将其添加到请求数据中，用于分页查询
+        if lastShareId:
+            data["lastShareId"] = lastShareId
+        # 发送GET请求获取分享列表信息
+        r = requests.get(url, data=data, headers=self.header)
+        # 将响应内容解析为JSON格式
+        rdata = json.loads(r.text)
+        # 检查HTTP响应状态码是否为200
+        if r.status_code == 200:
+            # 检查接口返回的code是否为0
+            if rdata["code"] == 0:
+                # 如果code为0，返回包含分享列表信息的字典
+                return rdata["data"]
+            else:
+                # 如果code不为0，抛出AccessTokenError异常
+                raise AccessTokenError(rdata)
+        else:
+            # 如果HTTP响应状态码不是200，抛出HTTPError异常
+            raise requests.HTTPError
+        
     def file_list(self, parent_file_id:int, limit:int):
         """
         获取指定父文件夹下的文件列表。
