@@ -133,8 +133,65 @@ class Pan123:
         else:
             # 如果HTTP响应状态码不是200，抛出HTTPError异常
             raise requests.HTTPError
+    
+    def share_list_info(self, shareIdList:list, trafficSwitch:bool=None, trafficLimitSwitch:bool=None, trafficLimit:int=None):
+        """
+        修改分享链接信息。
 
-    def v2_file_list(self, parent_file_id:int, limit:int):
+        参数:
+        - shareIdList (list): 分享ID列表。
+        - trafficSwitch (bool, 可选): 免登录流量包开关 False 关闭免登录流量包 True 打开免登录流量包
+        - trafficLimitSwitch (bool, 可选): 流量限制开关，免登录流量包开关 False 关闭流量限制 True 打开流量限制
+        - trafficLimit (int, 可选): 流量限制，默认为None。
+
+        返回:
+        - 无
+
+        异常:
+        - AccessTokenError: 如果接口返回的code不为0。
+        - HTTPError: 如果HTTP请求的状态码不是200。
+        """
+        # 构建请求URL
+        url = self.base_url + "/api/v1/share/list/info"
+        # 准备请求数据
+        data = {
+            "shareIdList": shareIdList
+        }
+        # 如果流量开关存在，则添加到请求数据中
+        if trafficSwitch:
+            if trafficSwitch == True:
+                data["trafficSwitch"] = 1
+            elif trafficSwitch == False:
+                data["trafficSwitch"] = 0
+        # 如果流量限制开关存在，则添加到请求数据中
+        if trafficLimitSwitch:
+            if trafficLimitSwitch == True:
+                data["trafficLimitSwitch"] = 1
+                if trafficLimit:
+                    data["trafficLimit"] = trafficLimit
+                else:
+                    return ValueError("流量限制开关为True时，流量限制不能为空")
+            elif trafficLimitSwitch == False:
+                data["trafficLimitSwitch"] = 0
+
+        # 发送POST请求修改分享链接信息
+        r = requests.post(url, data=data, headers=self.header)
+        # 将响应内容解析为JSON格式
+        rdata = json.loads(r.text)
+        # 检查HTTP响应状态码
+        if r.status_code == 200:
+            # 检查接口返回的code
+            if rdata["code"] == 0:
+                # 返回分享ID、分享链接和分享密钥
+                return rdata["data"]
+            else:
+                # 如果接口返回的code不为0，抛出AccessTokenError异常
+                raise AccessTokenError(rdata)
+        else:
+            # 如果HTTP响应状态码不是200，抛出HTTPError异常
+            raise requests.HTTPError
+
+    def file_list(self, parent_file_id:int, limit:int):
         """
         获取指定父文件夹下的文件列表。
 
@@ -177,7 +234,7 @@ class Pan123:
             # 如果HTTP响应状态码不是200，抛出HTTPError异常
             raise requests.HTTPError
 
-    def v1_file_mkdir(self, name:str, parent_id:int):
+    def file_mkdir(self, name:str, parent_id:int):
         """
         创建文件夹
 
