@@ -7,11 +7,12 @@ pip install 123pan
 ```
 ## 使用
 ### 导入模块
+
 ```python
 # 全量导入
-from pan123 import get_access_token, Pan123
+from pan123.pan123 import get_access_token, Pan123
 # 如果已经获取了access_token，则可以直接导入Pan123模块
-from pan123 import Pan123
+from pan123.pan123 import Pan123
 ```
 ### 获取 access_token
 获取访问令牌。
@@ -34,8 +35,10 @@ from pan123 import Pan123
 
 ### Pan123 Client
 要使用123云盘开放平台，需要先创建一个Pan123的客户端
+
 ```python
-from pan123 import Pan123
+from pan123.pan123 import Pan123
+
 # 将your_access_token替换为你的访问令牌
 pan = Pan123("your_access_token")
 ```
