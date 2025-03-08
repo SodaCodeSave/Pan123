@@ -6,10 +6,6 @@
 pip uninstall 123pan
 pip install 123pan
 ```
-或者使用更为***激♂进***的方案，前往[Actions](https://github.com/SodaCodeSave/Pan123/actions/workflows/auto-build.yml)下载实时构建的版本，然后解压，使用下面的命令进行安装
-```
-pip install 你解压出来的whl文件.whl
-```
 ## 使用
 部分函数可能未编写全面，详细请查看[123云盘开放文档](https://123yunpan.yuque.com/org-wiki-123yunpan-muaork/cr6ced/ppsuasz6rpioqbyt)
 ### 导入模块
