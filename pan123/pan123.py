@@ -62,6 +62,24 @@ def check_status_code(r):
         # 如果HTTP响应状态码不是200，抛出HTTPError异常
         raise requests.HTTPError(r.text)
 
+import hashlib
+
+import hashlib
+
+def get_file_md5(file_path):
+    """
+    计算文件的MD5哈希值。
+
+    :param file_path: 文件的路径
+    :return: 文件的MD5哈希值（十六进制字符串）
+    """
+    md5_hash = hashlib.md5()
+    with open(file_path, "rb") as file:
+        # 分块读取文件，避免一次性加载大文件到内存中
+        for chunk in iter(lambda: file.read(4096), b""):
+            md5_hash.update(chunk)
+    return md5_hash.hexdigest()
+
 class Pan123:
     def __init__(self, access_token:str):
         # 设置API请求的基础URL
@@ -211,13 +229,15 @@ class Pan123:
         # 发送POST请求
         r = requests.post(url, data=data, headers=self.header)
         # 将响应内容解析为JSON格式
-        return check_status_code(r)
+        return check_status_code(r)["presignedURL"]
     
     def file_upload(self, url:str, data:bytes):
+        # header = self.header
+        # header["Content-Type"] = "binary"
         # 发送Put请求
-        r = requests.put(url, files=data, headers=self.header)
+        r = requests.put(url, data=data)
         # 将响应内容解析为JSON格式
-        return check_status_code(r)
+        return r
     
     def file_list_upload_parts(self, preuploadID:str):
         # 构造请求URL
@@ -254,3 +274,30 @@ class Pan123:
         r = requests.post(url, data=data, headers=self.header)
         # 将响应内容解析为JSON格式
         return check_status_code(r)
+    
+    def file_upload_one(self, parentFileID, file_path):
+        # 一键上传文件
+        import os
+        import math
+        upload_data_parts = {}
+        f = self.file_create(parentFileID, os.path.basename(file_path), get_file_md5(file_path), os.stat(file_path).st_size)
+        num_slices = math.ceil(os.stat(file_path).st_size / f["sliceSize"])
+        with open(file_path, "rb") as fi:
+            for i in range(1, num_slices + 1):
+                url = self.file_get_upload_url(f["preuploadID"], i)
+                chunk = fi.read(f["sliceSize"])
+                md5 = hashlib.md5(chunk).hexdigest()
+                self.file_upload(url, chunk)
+                upload_data_parts[i] = {
+                    "md5": md5,
+                    "size": len(chunk),
+                }
+        if not os.stat(file_path).st_size <= f["sliceSize"]:
+            parts = self.file_list_upload_parts(f["preuploadID"])
+            for i in parts["parts"]:
+                part = i["partNumber"]
+                if upload_data_parts[i]["md5"] == i["etag"] and upload_data_parts[i]["size"] == i["size"]:
+                    next()
+                else:
+                    raise requests.HTTPError
+        self.file_upload_complete(f["preuploadID"])
