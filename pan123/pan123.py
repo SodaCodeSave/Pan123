@@ -301,3 +301,17 @@ class Pan123:
                 else:
                     raise requests.HTTPError
         self.file_upload_complete(f["preuploadID"])
+    
+    def file_rename(self, rename_dict:dict):
+        # 构造请求URL
+        url = self.base_url + "/api/v1/file/rename"
+        # 准备请求数据
+        rename_list = []
+        for i in rename_dict.keys:
+            rename_list.append(f"{i}|{rename_dict[i]}")
+        data = {
+            "renameList": rename_list
+        }
+        # 发送POST请求
+        r = requests.post(url, data=data, headers=self.header)
+        return check_status_code(r)
