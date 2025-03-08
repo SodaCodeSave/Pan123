@@ -57,10 +57,10 @@ def check_status_code(r):
             return json.loads(r.text)["data"]
         else:
             # 如果API返回码不为0，抛出AccessTokenError异常
-            raise AccessTokenError(rdata)
+            raise AccessTokenError(json.loads(r.text))
     else:
         # 如果HTTP响应状态码不是200，抛出HTTPError异常
-        raise requests.HTTPError
+        raise requests.HTTPError(r.text)
 
 class Pan123:
     def __init__(self, access_token:str):
@@ -117,19 +117,19 @@ class Pan123:
         # 如果流量开关存在，则添加到请求数据中
         if trafficSwitch:
             if trafficSwitch == True:
-                data["trafficSwitch"] = 1
+                data["trafficSwitch"] = 2
             elif trafficSwitch == False:
-                data["trafficSwitch"] = 0
+                data["trafficSwitch"] = 1
         # 如果流量限制开关存在，则添加到请求数据中
         if trafficLimitSwitch:
             if trafficLimitSwitch == True:
-                data["trafficLimitSwitch"] = 1
+                data["trafficLimitSwitch"] = 2
                 if trafficLimit:
                     data["trafficLimit"] = trafficLimit
                 else:
                     return ValueError("流量限制开关为True时，流量限制不能为空")
             elif trafficLimitSwitch == False:
-                data["trafficLimitSwitch"] = 0
+                data["trafficLimitSwitch"] = 1
 
         # 发送POST请求修改分享链接信息
         r = requests.put(url, data=data, headers=self.header)
@@ -138,7 +138,7 @@ class Pan123:
         
     def share_list(self, limit:int, lastShareId:int=None):
         # 构建请求的URL，将基础URL和分享列表信息的API路径拼接
-        url = self.base_url + "/api/v1/share/list/info"
+        url = self.base_url + "/api/v1/share/list"
         # 准备请求数据，设置每页返回的分享数量
         data = {
             "limit": limit   
@@ -163,20 +163,7 @@ class Pan123:
         r = requests.get(url, data=data, headers=self.header)
 
         # 将响应内容解析为JSON格式
-        rdata = json.loads(r.text)
-
-        # 检查HTTP响应状态码
-        if r.status_code == 200:
-            # 检查接口返回的code
-            if rdata["code"] == 0:
-                # 返回文件列表
-                return rdata["data"]["fileList"]
-            else:
-                # 如果code不为0，抛出AccessTokenError异常
-                raise AccessTokenError(rdata)
-        else:
-            # 如果HTTP响应状态码不是200，抛出HTTPError异常
-            raise requests.HTTPError
+        return check_status_code(r)
 
     def file_mkdir(self, name:str, parent_id:int):
         # 构造请求URL和参数
@@ -213,13 +200,55 @@ class Pan123:
         # 将响应内容解析为JSON格式
         return check_status_code(r)
         
-    def get_upload_url(self, preuploadID:str, sliceNo:int):
+    def file_get_upload_url(self, preuploadID:str, sliceNo:int):
         # 构造请求URL
-        url = self.base_url + "/upload/v1/file/upload"
+        url = self.base_url + "/upload/v1/file/get_upload_url"
         # 准备请求数据
         data = {
             "preuploadID": preuploadID,
             "sliceNo": sliceNo
+        }
+        # 发送POST请求
+        r = requests.post(url, data=data, headers=self.header)
+        # 将响应内容解析为JSON格式
+        return check_status_code(r)
+    
+    def file_upload(self, url:str, data:bytes):
+        # 发送Put请求
+        r = requests.put(url, files=data, headers=self.header)
+        # 将响应内容解析为JSON格式
+        return check_status_code(r)
+    
+    def file_list_upload_parts(self, preuploadID:str):
+        # 构造请求URL
+        url = self.base_url + "/upload/v1/file/list_upload_parts"
+        # 准备请求数据
+        data = {
+            "preuploadID": preuploadID
+        }
+        # 发送POST请求
+        r = requests.post(url, data=data, headers=self.header)
+        # 将响应内容解析为JSON格式
+        return check_status_code(r)
+    
+    def file_upload_complete(self, preuploadID:str):
+        # 构造请求URL
+        url = self.base_url + "/upload/v1/file/upload_complete"
+        # 准备请求数据
+        data = {
+            "preuploadID": preuploadID
+        }
+        # 发送POST请求
+        r = requests.post(url, data=data, headers=self.header)
+        # 将响应内容解析为JSON格式
+        return check_status_code(r)
+    
+    def file_upload_async_result(self, preuploadID:str):
+        # 构造请求URL
+        url = self.base_url + "/upload/v1/file/upload_async_result"
+        # 准备请求数据
+        data = {
+            "preuploadID": preuploadID
         }
         # 发送POST请求
         r = requests.post(url, data=data, headers=self.header)
