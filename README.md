@@ -11,10 +11,21 @@ pip install 123pan
 ### 导入模块
 ```python
 # 全量导入
-from pan123.pan123 import get_access_token, Pan123
+from pan123 import get_access_token, Pan123
 # 如果已经获取了access_token，则可以直接导入Pan123模块
-from pan123.pan123 import Pan123
+from pan123 import Pan123
 ```
 ### 模块文档
-**阅读须知** 由于时间原因，文档由AI编写，尽请谅解，也欢迎pr来完善文档和代码
+**阅读须知** 暂时没有覆盖到全部函数，请查看[123云盘开放文档](https://123yunpan.yuque.com/org-wiki-123yunpan-muaork/cr6ced/ppsuasz6rpioqbyt)
+
 [docs.md](https://github.com/SodaCodeSave/Pan123/blob/main/docs.md)
+
+### 已经实现的内容
+- 分享链接
+- 文件管理
+- 用户管理
+- 离线下载
+### 正在编写的内容
+- 直链
+- 视频转码 
+- 图床

@@ -19,4 +19,183 @@ get_access_token("your_client_id", "your_client_secret")
 - 输出：
   - 无
 ## 函数
-> 加急编写中（；´д｀）ゞ
+# 函数列表
+
+## get_access_token(client_id, client_secret, base_url, header)
+- 输入: 
+    - client_id
+    - client_secret
+    - base_url
+    - header
+
+- 输出：
+
+## check_status_code(r)
+- 输入: 
+    - r
+
+- 输出：
+
+## get_file_md5(file_path)
+- 输入: 
+    - file_path
+
+- 输出：
+
+## create_share(self, share_name, share_expire, file_id_list, share_pwd)
+- 输入: 
+    - self
+    - share_name
+    - share_expire
+    - file_id_list
+    - share_pwd
+
+- 输出：
+
+## share_list_info(self, share_id_list, traffic_switch, traffic_limit_switch, traffic_limit)
+- 输入: 
+    - self
+    - share_id_list
+    - traffic_switch
+    - traffic_limit_switch
+    - traffic_limit
+
+- 输出：
+
+## share_list(self, limit, last_share_id)
+- 输入: 
+    - self
+    - limit
+    - last_share_id
+
+- 输出：
+
+## file_list(self, parent_file_id, limit)
+- 输入: 
+    - self
+    - parent_file_id
+    - limit
+
+- 输出：
+
+## file_mkdir(self, name, parent_id)
+- 输入: 
+    - self
+    - name
+    - parent_id
+
+- 输出：
+
+## file_create(self, preupload_id, filename, etag, size, duplicate)
+- 输入: 
+    - self
+    - preupload_id
+    - filename
+    - etag
+    - size
+    - duplicate
+
+- 输出：
+
+## file_get_upload_url(self, preupload_id, slice_no)
+- 输入: 
+    - self
+    - preupload_id
+    - slice_no
+
+- 输出：
+
+## file_list_upload_parts(self, preupload_id)
+- 输入: 
+    - self
+    - preupload_id
+
+- 输出：
+
+## file_upload_complete(self, preupload_id)
+- 输入: 
+    - self
+    - preupload_id
+
+- 输出：
+
+## file_upload_async_result(self, preupload_id)
+- 输入: 
+    - self
+    - preupload_id
+
+- 输出：
+
+## file_upload(self, preupload_id, file_path)
+- 输入: 
+    - self
+    - preupload_id
+    - file_path
+
+- 输出：
+
+## file_rename(self, rename_dict)
+- 输入: 
+    - self
+    - rename_dict
+
+- 输出：
+
+## file_move(self, file_id_list, to_parent_file_id)
+- 输入: 
+    - self
+    - file_id_list
+    - to_parent_file_id
+
+- 输出：
+
+## file_trash(self, file_ids)
+- 输入: 
+    - self
+    - file_ids
+
+- 输出：
+
+## file_recover(self, file_ids)
+- 输入: 
+    - self
+    - file_ids
+
+- 输出：
+
+## file_delete(self, file_ids)
+- 输入: 
+    - self
+    - file_ids
+
+- 输出：
+
+## file_detail(self, file_id)
+- 输入: 
+    - self
+    - file_id
+
+- 输出：
+
+## user_info(self)
+- 输入: 
+    - self
+
+- 输出：
+
+## offline_download(self, download_url, file_name, save_path, call_back_url)
+- 输入: 
+    - self
+    - download_url
+    - file_name
+    - save_path
+    - call_back_url
+
+- 输出：
+
+## offline_download_process(self, task_id)
+- 输入: 
+    - self
+    - task_id
+
+- 输出：
