@@ -326,3 +326,36 @@ class Pan123:
         }
         r = requests.post(url, data=data, headers=self.header)
         return check_status_code(r)
+
+    def file_recover(self, file_ids):
+        url = self.base_url + "/api/v1/file/recover"
+        data = {
+            "fileIDs": file_ids
+        }
+        r = requests.post(url, data=data, headers=self.header)
+        return check_status_code(r)
+
+    def file_delete(self, file_ids):
+        url = self.base_url + "/api/v1/file/delete"
+        data = {
+            "fileIDs": file_ids
+        }
+        r = requests.post(url, data=data, headers=self.header)
+        return check_status_code(r)
+
+    def file_detail(self, file_id):
+        url = self.base_url + "/api/v1/file/detail"
+        data = {
+            "fileID": file_id
+        }
+        r = requests.post(url, data=data, headers=self.header)
+        data = check_status_code(r)
+        if data["trashed"] == 1:
+            data["trashed"] = True
+        else:
+            data["trashed"] = False
+        if data["type"] == 1:
+            data["type"] = "folder"
+        else:
+            data["type"] = "file"
+        return data
