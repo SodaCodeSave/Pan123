@@ -64,8 +64,6 @@ def check_status_code(r):
 
 import hashlib
 
-import hashlib
-
 def get_file_md5(file_path):
     """
     计算文件的MD5哈希值。
@@ -125,28 +123,28 @@ class Pan123:
             # 如果HTTP响应状态码不是200，抛出HTTPError异常
             raise requests.HTTPError
     
-    def share_list_info(self, shareIdList:list, trafficSwitch:bool=None, trafficLimitSwitch:bool=None, trafficLimit:int=None):
+    def share_list_info(self, share_id_list:list, traffic_switch:bool=None, traffic_limit_switch:bool=None, traffic_limit:int=None):
         # 构建请求URL
         url = self.base_url + "/api/v1/share/list/info"
         # 准备请求数据
         data = {
-            "shareIdList": shareIdList
+            "shareIdList": share_id_list
         }
         # 如果流量开关存在，则添加到请求数据中
-        if trafficSwitch:
-            if trafficSwitch == True:
+        if traffic_switch:
+            if traffic_switch:
                 data["trafficSwitch"] = 2
-            elif trafficSwitch == False:
+            elif not traffic_switch:
                 data["trafficSwitch"] = 1
         # 如果流量限制开关存在，则添加到请求数据中
-        if trafficLimitSwitch:
-            if trafficLimitSwitch == True:
+        if traffic_limit_switch:
+            if traffic_limit_switch:
                 data["trafficLimitSwitch"] = 2
-                if trafficLimit:
-                    data["trafficLimit"] = trafficLimit
+                if traffic_limit:
+                    data["trafficLimit"] = traffic_limit
                 else:
                     return ValueError("流量限制开关为True时，流量限制不能为空")
-            elif trafficLimitSwitch == False:
+            elif not traffic_limit_switch:
                 data["trafficLimitSwitch"] = 1
 
         # 发送POST请求修改分享链接信息
@@ -154,7 +152,7 @@ class Pan123:
         # 将响应内容解析为JSON格式
         return check_status_code(r)
         
-    def share_list(self, limit:int, lastShareId:int=None):
+    def share_list(self, limit:int, last_share_id:int=None):
         # 构建请求的URL，将基础URL和分享列表信息的API路径拼接
         url = self.base_url + "/api/v1/share/list"
         # 准备请求数据，设置每页返回的分享数量
@@ -162,8 +160,8 @@ class Pan123:
             "limit": limit   
         }
         # 如果传入了lastShareId，将其添加到请求数据中，用于分页查询
-        if lastShareId:
-            data["lastShareId"] = lastShareId
+        if last_share_id:
+            data["lastShareId"] = last_share_id
         # 发送GET请求获取分享列表信息
         r = requests.get(url, data=data, headers=self.header)
         # 将响应内容解析为JSON格式
@@ -197,12 +195,12 @@ class Pan123:
         # 将响应内容解析为JSON格式
         return check_status_code(r)
     
-    def file_create(self, parentFileID:int, filename:str, etag:str, size:int, duplicate:int=None):
+    def file_create(self, preupload_id:int, filename:str, etag:str, size:int, duplicate:int=None):
         # 构造请求URL
         url = self.base_url + "/upload/v1/file/create"
         # 准备请求数据
         data = {
-            "parentFileID": parentFileID,
+            "parentFileID": preupload_id,
             # 文件名
             "filename": filename,
             # 文件的etag
@@ -218,76 +216,69 @@ class Pan123:
         # 将响应内容解析为JSON格式
         return check_status_code(r)
         
-    def file_get_upload_url(self, preuploadID:str, sliceNo:int):
+    def file_get_upload_url(self, preupload_id:str, slice_no:int):
         # 构造请求URL
         url = self.base_url + "/upload/v1/file/get_upload_url"
         # 准备请求数据
         data = {
-            "preuploadID": preuploadID,
-            "sliceNo": sliceNo
+            "preuploadID": preupload_id,
+            "sliceNo": slice_no
         }
         # 发送POST请求
         r = requests.post(url, data=data, headers=self.header)
         # 将响应内容解析为JSON格式
         return check_status_code(r)["presignedURL"]
-    
-    def file_upload(self, url:str, data:bytes):
-        # header = self.header
-        # header["Content-Type"] = "binary"
-        # 发送Put请求
-        r = requests.put(url, data=data)
-        # 将响应内容解析为JSON格式
-        return r
-    
-    def file_list_upload_parts(self, preuploadID:str):
+
+    def file_list_upload_parts(self, preupload_id:str):
         # 构造请求URL
         url = self.base_url + "/upload/v1/file/list_upload_parts"
         # 准备请求数据
         data = {
-            "preuploadID": preuploadID
+            "preuploadID": preupload_id
         }
         # 发送POST请求
         r = requests.post(url, data=data, headers=self.header)
         # 将响应内容解析为JSON格式
         return check_status_code(r)
     
-    def file_upload_complete(self, preuploadID:str):
+    def file_upload_complete(self, preupload_id:str):
         # 构造请求URL
         url = self.base_url + "/upload/v1/file/upload_complete"
         # 准备请求数据
         data = {
-            "preuploadID": preuploadID
+            "preuploadID": preupload_id
         }
         # 发送POST请求
         r = requests.post(url, data=data, headers=self.header)
         # 将响应内容解析为JSON格式
         return check_status_code(r)
     
-    def file_upload_async_result(self, preuploadID:str):
+    def file_upload_async_result(self, preupload_id:str):
         # 构造请求URL
         url = self.base_url + "/upload/v1/file/upload_async_result"
         # 准备请求数据
         data = {
-            "preuploadID": preuploadID
+            "preuploadID": preupload_id
         }
         # 发送POST请求
         r = requests.post(url, data=data, headers=self.header)
         # 将响应内容解析为JSON格式
         return check_status_code(r)
     
-    def file_upload_one(self, parentFileID, file_path):
+    def file_upload_one(self, preupload_id, file_path):
         # 一键上传文件
         import os
         import math
         upload_data_parts = {}
-        f = self.file_create(parentFileID, os.path.basename(file_path), get_file_md5(file_path), os.stat(file_path).st_size)
+        f = self.file_create(preupload_id, os.path.basename(file_path), get_file_md5(file_path), os.stat(file_path).st_size)
         num_slices = math.ceil(os.stat(file_path).st_size / f["sliceSize"])
         with open(file_path, "rb") as fi:
             for i in range(1, num_slices + 1):
                 url = self.file_get_upload_url(f["preuploadID"], i)
                 chunk = fi.read(f["sliceSize"])
                 md5 = hashlib.md5(chunk).hexdigest()
-                self.file_upload(url, chunk)
+                # 发送Put请求
+                requests.put(url, data=chunk)
                 upload_data_parts[i] = {
                     "md5": md5,
                     "size": len(chunk),
@@ -296,8 +287,8 @@ class Pan123:
             parts = self.file_list_upload_parts(f["preuploadID"])
             for i in parts["parts"]:
                 part = i["partNumber"]
-                if upload_data_parts[i]["md5"] == i["etag"] and upload_data_parts[i]["size"] == i["size"]:
-                    next()
+                if upload_data_parts[i]["md5"] == part["etag"] and upload_data_parts[i]["size"] == part["size"]:
+                    pass
                 else:
                     raise requests.HTTPError
         self.file_upload_complete(f["preuploadID"])
@@ -307,11 +298,31 @@ class Pan123:
         url = self.base_url + "/api/v1/file/rename"
         # 准备请求数据
         rename_list = []
-        for i in rename_dict.keys:
+        for i in rename_dict.keys():
             rename_list.append(f"{i}|{rename_dict[i]}")
         data = {
             "renameList": rename_list
         }
         # 发送POST请求
+        r = requests.post(url, data=data, headers=self.header)
+        return check_status_code(r)
+    
+    def file_move(self, file_id_list:list, to_parent_file_id:int):
+        # 构造请求URL
+        url = self.base_url + "/api/v1/file/move"
+        # 准备请求数据
+        data = {
+            "fileIDs": file_id_list,
+            "toParentFileID": to_parent_file_id
+        }
+        # 发送POST请求
+        r = requests.post(url, data=data, headers=self.header)
+        return check_status_code(r)
+    
+    def file_trash(self, file_ids):
+        url = self.base_url + "/api/v1/file/trash"
+        data = {
+            "fileIDs": file_ids
+        }
         r = requests.post(url, data=data, headers=self.header)
         return check_status_code(r)
