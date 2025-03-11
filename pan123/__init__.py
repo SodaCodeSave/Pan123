@@ -2,8 +2,9 @@
 # 在使用前，请去123云盘开放平台(https://www.123pan.cn/developer)申请使用权限
 # 在邮箱中查询client_id和client_secret，并使用get_access_token函数获取访问令牌
 
-import requests
 import json
+
+import requests
 
 
 class ClientKeyError(Exception):
@@ -396,47 +397,53 @@ class Pan123:
         }
         r = requests.post(url, data=data, headers=self.header)
         return check_status_code(r)
-#直连部分 By-@狸雪花
-    def query_transcode(self, ids):#查询转码进度
+
+    # 直链部分 By-@狸雪花
+    def query_transcode(self, ids):  # 查询转码进度
         url = self.base_url + "/api/v1/direct-link/queryTranscode"
         data = {
             "ids": ids
         }
         r = requests.post(url, data=data, headers=self.header)
         return check_status_code(r)
-    def do_transcode(self, ids):#发起直连转码
+
+    def do_transcode(self, ids):  # 发起直链转码
         url = self.base_url + "/api/v1/direct-link/doTranscode"
         data = {
             "ids": ids,
         }
         r = requests.post(url, data=data, headers=self.header)
         return check_status_code(r)
-    def get_direct_link_m3u8(self, fileID):#获取转码直连
+
+    def get_direct_link_m3u8(self, file_id):  # 获取直链直连
         url = self.base_url + "/api/v1/direct-link/get/m3u8"
         data = {
-            "fileID": fileID,
+            "fileID": file_id,
         }
         r = requests.post(url, data=data, headers=self.header)
         return check_status_code(r)
-    def direct_link_enable(self, fileID):#开启直连功能
+
+    def direct_link_enable(self, file_id):  # 开启直链功能
         url = self.base_url + "/api/v1/direct-link/enable"
         data = {
-            "fileID": fileID,
+            "fileID": file_id,
         }
         r = requests.post(url, data=data, headers=self.header)
         return check_status_code(r)
-    def direct_link_disable(self, fileID):#关闭直连功能
+
+    def direct_link_disable(self, file_id):  # 关闭直链功能
         url = self.base_url + "/api/v1/direct-link/disable"
         data = {
-            "fileID": fileID,
+            "fileID": file_id,
         }
         r = requests.post(url, data=data, headers=self.header)
         return check_status_code(r)
-    def direct_list_url(self, fileID):#获取直连地址
+
+    def direct_list_url(self, file_id):  # 获取直链地址
         url = self.base_url + "/api/v1/direct-link/url"
         data = {
-            "fileID": fileID,
+            "fileID": file_id,
         }
         r = requests.post(url, data=data, headers=self.header)
         return check_status_code(r)
-#喵呜，直连部分写完了喵
+    # 喵呜，直连部分写完了喵

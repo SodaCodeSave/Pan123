@@ -5,8 +5,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="pan123",
-    version="0.0.8",
-    author="SodaCodeSave",
+    version="0.0.9",
+    author="SodaCodeSave&lixuehua",
     author_email="soda_code@outlook.com",
     description="This is an unofficial 123 Pan Open Platform API library, which can easily call the 123 Pan Open Platform in Python without the need to write repetitive code multiple times",
     long_description=long_description,
