@@ -19,8 +19,6 @@ get_access_token("your_client_id", "your_client_secret")
 - 输出：
   - 无
 ## 函数
-# 函数列表
-
 ## get_access_token(client_id, client_secret, base_url, header)
 - 输入: 
     - client_id
@@ -39,6 +37,27 @@ get_access_token("your_client_id", "your_client_secret")
 ## get_file_md5(file_path)
 - 输入: 
     - file_path
+
+- 输出：
+
+## __init__(self, r)
+- 输入: 
+    - self
+    - r
+
+- 输出：
+
+## __init__(self, r)
+- 输入: 
+    - self
+    - r
+
+- 输出：
+
+## __init__(self, access_token)
+- 输入: 
+    - self
+    - access_token
 
 - 输出：
 
@@ -199,3 +218,46 @@ get_access_token("your_client_id", "your_client_secret")
     - task_id
 
 - 输出：
+
+## query_transcode(self, ids)
+- 输入: 
+    - self
+    - ids
+
+- 输出：
+
+## do_transcode(self, ids)
+- 输入: 
+    - self
+    - ids
+
+- 输出：
+
+## get_direct_link_m3u8(self, file_id)
+- 输入: 
+    - self
+    - file_id
+
+- 输出：
+
+## direct_link_enable(self, file_id)
+- 输入: 
+    - self
+    - file_id
+
+- 输出：
+
+## direct_link_disable(self, file_id)
+- 输入: 
+    - self
+    - file_id
+
+- 输出：
+
+## direct_list_url(self, file_id)
+- 输入: 
+    - self
+    - file_id
+
+- 输出：
+
