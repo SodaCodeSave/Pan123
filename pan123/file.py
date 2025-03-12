@@ -44,12 +44,12 @@ class File:
         # 将响应内容解析为JSON格式
         return check_status_code(r)
 
-    def create(self, preupload_id: int, filename: str, etag: str, size: int, duplicate: int = None):
+    def create(self, parent_file_id: int, filename: str, etag: str, size: int, duplicate: int = None):
         # 构造请求URL
         url = self.base_url + "/upload/v1/file/create"
         # 准备请求数据
         data = {
-            "parentFileID": preupload_id,
+            "parentFileID": parent_file_id,
             # 文件名
             "filename": filename,
             # 文件的etag
@@ -114,13 +114,13 @@ class File:
         # 将响应内容解析为JSON格式
         return check_status_code(r)
 
-    def upload(self, preupload_id, file_path):
+    def upload(self, parent_file_id, file_path):
         # 一键上传文件
         import os
         import math
         upload_data_parts = {}
-        f = self.create(preupload_id, os.path.basename(file_path), get_file_md5(file_path),
-                             os.stat(file_path).st_size)
+        f = self.create(parent_file_id, os.path.basename(file_path), get_file_md5(file_path),
+                        os.stat(file_path).st_size)
         num_slices = math.ceil(os.stat(file_path).st_size / f["sliceSize"])
         with open(file_path, "rb") as fi:
             for i in range(1, num_slices + 1):
