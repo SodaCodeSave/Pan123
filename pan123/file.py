@@ -10,13 +10,19 @@ class File:
         self.header = header
         self.base_url = base_url
 
-    def list(self, parent_file_id: int, limit: int):
+    def list(self, parent_file_id: int, limit: int, search_data=None, search_mode=None, last_file_id=None):
         # 构造请求URL和参数
         url = self.base_url + "/api/v2/file/list"
         data = {
             "parentFileId": parent_file_id,
             "limit": limit
         }
+        if search_data:
+            data["searchData"] = search_data
+        if search_mode:
+            data["searchMode"] = search_mode
+        if last_file_id:
+            data["lastFileID"] = last_file_id
 
         # 发送GET请求
         r = requests.get(url, data=data, headers=self.header)
