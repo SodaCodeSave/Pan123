@@ -191,6 +191,28 @@ class Pan123:
         # 将响应内容解析为JSON格式
         return check_status_code(r)
 
+    def oss_file_list(self, parent_file_id: int, limit=None, start_time=None, end_time=None, last_file_id=None):
+        # 神人123云盘，图床API和文件管理一样为什么不用同一套URL加参数
+        url = self.base_url + "/api/v1/oss/file/list"
+        data = {
+            "parentFileId": parent_file_id,
+            # Type固定为1为什么是必填项?
+            "type": 1
+        }
+
+        if limit:
+            data["limit"] = limit
+        if start_time:
+            data["startTime"] = start_time
+        if end_time:
+            data["endTime"] = end_time
+        if last_file_id:
+            data["lastFileId"] = last_file_id
+
+        r = requests.get(url, data=data, headers=self.header)
+
+        return check_status_code(r)
+
     def file_mkdir(self, name: str, parent_id: int):
         # 构造请求URL和参数
         url = self.base_url + "/upload/v1/file/mkdir"
@@ -330,6 +352,18 @@ class Pan123:
         r = requests.post(url, data=data, headers=self.header)
         return check_status_code(r)
 
+    def oss_file_move(self, file_id_list: list, to_parent_file_id: int):
+        # 构造请求URL
+        url = self.base_url + "/api/v1/oss/file/move"
+        # 准备请求数据
+        data = {
+            "fileIDs": file_id_list,
+            "toParentFileID": to_parent_file_id
+        }
+        # 发送POST请求
+        r = requests.post(url, data=data, headers=self.header)
+        return check_status_code(r)
+
     def file_trash(self, file_ids):
         url = self.base_url + "/api/v1/file/trash"
         data = {
@@ -354,8 +388,33 @@ class Pan123:
         r = requests.post(url, data=data, headers=self.header)
         return check_status_code(r)
 
+    def oss_file_delete(self, file_ids):
+        url = self.base_url + "/api/v1/oss/file/delete"
+        data = {
+            "fileIDs": file_ids
+        }
+        r = requests.post(url, data=data, headers=self.header)
+        return check_status_code(r)
+
     def file_detail(self, file_id):
         url = self.base_url + "/api/v1/file/detail"
+        data = {
+            "fileID": file_id
+        }
+        r = requests.post(url, data=data, headers=self.header)
+        data = check_status_code(r)
+        if data["trashed"] == 1:
+            data["trashed"] = True
+        else:
+            data["trashed"] = False
+        if data["type"] == 1:
+            data["type"] = "folder"
+        else:
+            data["type"] = "file"
+        return data
+
+    def oss_file_detail(self, file_id):
+        url = self.base_url + "/api/v1/oss/file/detail"
         data = {
             "fileID": file_id
         }
@@ -390,8 +449,31 @@ class Pan123:
         r = requests.post(url, data=data, headers=self.header)
         return check_status_code(r)
 
+    def oss_offline_download(self, download_url, file_name=None, save_path=None, call_back_url=None):
+        url = self.base_url + "/api/v1/oss/offline/download"
+        data = {
+            "url": download_url,
+            "type": 1
+        }
+        if file_name:
+            data["fileName"] = file_name
+        if save_path:
+            data["savePath"] = save_path
+        if call_back_url:
+            data["callBackUrl"] = call_back_url
+        r = requests.post(url, data=data, headers=self.header)
+        return check_status_code(r)
+
     def offline_download_process(self, task_id):
         url = self.base_url + "/api/v1/offline/download/process"
+        data = {
+            "taskID": task_id
+        }
+        r = requests.post(url, data=data, headers=self.header)
+        return check_status_code(r)
+
+    def oss_offline_download_process(self, task_id):
+        url = self.base_url + "/api/v1/oss/offline/download/process"
         data = {
             "taskID": task_id
         }
@@ -570,4 +652,4 @@ class Pan123:
         }
         r = requests.post(url, data=data, headers=self.header)
         return check_status_code(r)
-# 嗷呜，视频转码完成，喵喵喵！
+    # 嗷呜，视频转码完成，喵喵喵！
