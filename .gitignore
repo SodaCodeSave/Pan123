@@ -160,3 +160,7 @@ cython_debug/
 .idea/
 
 access_token.txt
+
+.python-version
+pyproject.toml
+uv.lock
