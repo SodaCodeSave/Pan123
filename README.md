@@ -6,8 +6,6 @@
 pip uninstall 123pan
 pip install 123pan
 ```
-## 使用
-部分函数可能未编写全面，详细请查看[123云盘开放文档](https://123yunpan.yuque.com/org-wiki-123yunpan-muaork/cr6ced/ppsuasz6rpioqbyt)
 ### 导入模块
 ```python
 # 全量导入
@@ -17,9 +15,9 @@ from pan123.auth import get_access_token
 from pan123 import Pan123
 ```
 ### 模块文档
-**阅读须知** 暂时没有覆盖到全部函数，请查看[123云盘开放文档](https://123yunpan.yuque.com/org-wiki-123yunpan-muaork/cr6ced/ppsuasz6rpioqbyt)
-
 关于模块清查阅 **[Pan123 Gitbook文档](https://pan123.gitbook.io)**
+
+如需了解更多，请查阅[123云盘开放平台官方文档](https://123yunpan.yuque.com/org-wiki-123yunpan-muaork/cr6ced/ppsuasz6rpioqbyt)
 
 ### 已经实现的内容
 - 分享链接
@@ -28,5 +26,6 @@ from pan123 import Pan123
 - 离线下载
 - 直链
 - 视频转码 
-### 正在编写的内容
 - 图床
+### 正在编写的内容
+- 全都写完啦（啪叽啪叽啪叽）
