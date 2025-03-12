@@ -9,6 +9,8 @@ class OSS:
     def __init__(self, base_url, header):
         self.header = header
         self.base_url = base_url
+        from .oss_offline_download import OSSOfflineDownload
+        self.offline_download = OSSOfflineDownload(base_url, header)
 
     def list(self, parent_file_id: int, limit=None, start_time=None, end_time=None, last_file_id=None):
         # 神人123云盘，图床API和文件管理一样为什么不用同一套URL加参数
@@ -37,7 +39,8 @@ class OSS:
         url = self.base_url + "/upload/v1/oss/file/mkdir"
         data = {
             "name": name,
-            "parentID": parent_id
+            "parentID": parent_id,
+            "type": 1
         }
 
         # 发送GET请求
@@ -57,7 +60,8 @@ class OSS:
             # 文件的etag
             "etag": etag,
             # 文件大小
-            "size": size
+            "size": size,
+            "type": 1
         }
         # 如果传入了重复处理方式参数，则添加到请求数据中
         if duplicate:
