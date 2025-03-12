@@ -11,6 +11,8 @@ class OSS:
         self.base_url = base_url
         from .oss_offline_download import OSSOfflineDownload
         self.offline_download = OSSOfflineDownload(base_url, header)
+        from .oss_source_copy import OSSSourceCopy
+        self.source_copy = OSSSourceCopy(base_url, header)
 
     def list(self, parent_file_id: int, limit=None, start_time=None, end_time=None, last_file_id=None):
         # 神人123云盘，图床API和文件管理一样为什么不用同一套URL加参数
