@@ -10,7 +10,7 @@ class Share:
         self.header = header
         self.base_url = base_url
 
-    def create(self, share_name: str, share_expire: int, file_id_list: list, share_pwd=None):
+    def create(self, share_name: str, share_expire: int, file_id_list: list, share_pwd=None, traffic_switch=None, traffic_limit_switch=None, traffic_limit=None):
         # 构建请求URL
         url = self.base_url + "/api/v1/share/create"
         # 准备请求数据
@@ -22,6 +22,20 @@ class Share:
         # 如果分享密码存在，则添加到请求数据中
         if share_pwd:
             data["sharePwd"] = share_pwd
+        if traffic_switch:
+            if traffic_switch:
+                data["trafficSwitch"] = 2
+            elif not traffic_switch:
+                data["trafficSwitch"] = 1
+        if traffic_limit_switch:
+            if traffic_limit_switch:
+                data["trafficLimitSwitch"] = 2
+                if traffic_limit:
+                    data["trafficLimit"] = traffic_limit
+                else:
+                    return ValueError("流量限制开关为True时，流量限制不能为空")
+            elif not traffic_limit_switch:
+                data["trafficLimitSwitch"] = 1
         # 发送POST请求创建分享
         r = requests.post(url, data=data, headers=self.header)
         # 将响应内容解析为JSON格式
