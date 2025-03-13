@@ -15,11 +15,9 @@ class OSS:
         self.source_copy = OSSSourceCopy(base_url, header)
 
     def list(self, parent_file_id: int, limit=None, start_time=None, end_time=None, last_file_id=None):
-        # 神人123云盘，图床API和文件管理一样为什么不用同一套URL加参数
         url = self.base_url + "/api/v1/oss/file/list"
         data = {
             "parentFileId": parent_file_id,
-            # Type固定为1为什么是必填项?
             "type": 1
         }
 
