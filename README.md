@@ -15,7 +15,7 @@ from pan123.auth import get_access_token
 from pan123 import Pan123
 ```
 ### 模块文档
-关于模块清查阅 **[Pan123 Gitbook文档](https://pan123.gitbook.io)**
+关于模块清查阅 **[Pan123 Github Page文档](https://sodacodesave.github.io/Pan123-Docs/site/)**
 
 如需了解更多，请查阅[123云盘开放平台官方文档](https://123yunpan.yuque.com/org-wiki-123yunpan-muaork/cr6ced/ppsuasz6rpioqbyt)
 
