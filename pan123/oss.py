@@ -170,6 +170,7 @@ class OSS:
         }
         r = requests.post(url, data=data, headers=self.header)
         return check_status_code(r)
+
     def detail(self, file_id):
         url = self.base_url + "/api/v1/oss/file/detail"
         data = {

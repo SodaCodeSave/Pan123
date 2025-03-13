@@ -4,6 +4,7 @@ import requests
 
 from .utils import ClientKeyError
 
+
 def get_access_token(client_id: str, client_secret: str, base_url: str = "https://open-api.123pan.com",
                      header: dict = None):
     # 检查header是否传入，如未传入则使用默认值

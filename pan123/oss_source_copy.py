@@ -2,6 +2,7 @@ import requests
 
 from .utils import check_status_code
 
+
 class OSSSourceCopy:
     def __init__(self, base_url, header):
         self.header = header

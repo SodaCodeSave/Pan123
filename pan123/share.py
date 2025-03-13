@@ -10,7 +10,8 @@ class Share:
         self.header = header
         self.base_url = base_url
 
-    def create(self, share_name: str, share_expire: int, file_id_list: list, share_pwd=None, traffic_switch=None, traffic_limit_switch=None, traffic_limit=None):
+    def create(self, share_name: str, share_expire: int, file_id_list: list, share_pwd=None, traffic_switch=None,
+               traffic_limit_switch=None, traffic_limit=None):
         # 构建请求URL
         url = self.base_url + "/api/v1/share/create"
         # 准备请求数据

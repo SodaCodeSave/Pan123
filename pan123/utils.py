@@ -2,6 +2,7 @@ import json
 
 import requests
 
+
 class ClientKeyError(Exception):
     def __init__(self, r):
         self.r = r
@@ -30,6 +31,7 @@ def get_file_md5(file_path):
         for chunk in iter(lambda: file.read(4096), b""):
             md5_hash.update(chunk)
     return md5_hash.hexdigest()
+
 
 def check_status_code(r):
     # 检查HTTP响应状态码
