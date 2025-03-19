@@ -144,6 +144,8 @@ class File:
         upload_data_parts = {}
         f = self.create(parent_file_id, os.path.basename(file_path), get_file_md5(file_path),
                         os.stat(file_path).st_size)
+        if f["reuse"]:
+            return
         num_slices = math.ceil(os.stat(file_path).st_size / f["sliceSize"])
         with open(file_path, "rb") as fi:
             for i in range(1, num_slices + 1):
@@ -151,7 +153,7 @@ class File:
                 chunk = fi.read(f["sliceSize"])
                 md5 = hashlib.md5(chunk).hexdigest()
                 # 发送Put请求
-                requests.put(url, data=chunk)
+                requests.put(url, data=chunk, verify=False)
                 upload_data_parts[i] = {
                     "md5": md5,
                     "size": len(chunk),
