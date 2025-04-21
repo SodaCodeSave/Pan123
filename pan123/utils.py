@@ -14,6 +14,10 @@ class AccessTokenError(Exception):
         self.r = r
         super().__init__(f"错误的access_token，请检查后重试\n{self.r}")
 
+class CloudError(Exception):
+    def __init__(self, r):
+        self.r = r
+        super().__init__(f"{self.r["message"]}")
 
 import hashlib
 
@@ -42,7 +46,7 @@ def check_status_code(r):
             return json.loads(r.text)["data"]
         else:
             # 如果API返回码不为0，抛出AccessTokenError异常
-            raise AccessTokenError(json.loads(r.text))
+            raise CloudError(json.loads(r.text))
     else:
         # 如果HTTP响应状态码不是200，抛出HTTPError异常
         raise requests.HTTPError(r.text)
