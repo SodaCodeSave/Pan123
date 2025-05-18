@@ -223,7 +223,7 @@ class File:
         data = {
             "fileID": file_id
         }
-        r = requests.post(url, data=data, headers=self.header)
+        r = requests.get(url, data=data, headers=self.header)
         data = check_status_code(r)
         if data["trashed"] == 1:
             data["trashed"] = True
