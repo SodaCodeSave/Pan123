@@ -153,7 +153,7 @@ class File:
                 chunk = fi.read(f["sliceSize"])
                 md5 = hashlib.md5(chunk).hexdigest()
                 # 发送Put请求
-                requests.put(url, data=chunk, verify=False)
+                requests.put(url, data=chunk)
                 upload_data_parts[i] = {
                     "md5": md5,
                     "size": len(chunk),
@@ -162,7 +162,7 @@ class File:
             parts = self.list_upload_parts(f["preuploadID"])
             for i in parts["parts"]:
                 part = i["partNumber"]
-                if upload_data_parts[i]["md5"] == part["etag"] and upload_data_parts[i]["size"] == part["size"]:
+                if upload_data_parts[int(part)]["md5"] == i["etag"] and upload_data_parts[int(part)]["size"] == i["size"]:
                     pass
                 else:
                     raise requests.HTTPError
