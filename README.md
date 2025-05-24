@@ -34,9 +34,7 @@ from pan123 import Pan123
 
 ### 文档
 
-关于Pan123清查阅 **[Pan123 Github Page 文档](https://sodacodesave.github.io/Pan123-Docs/site/)**
-
-关于123云盘API，请查阅 [123 云盘开放平台官方文档](https://123yunpan.yuque.com/org-wiki-123yunpan-muaork/cr6ced/ppsuasz6rpioqbyt)
+**[Pan123 Github Page 文档](https://sodacodesave.github.io/Pan123-Docs/site/)**
 
 ### 已经实现的内容
 

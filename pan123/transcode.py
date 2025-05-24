@@ -9,9 +9,12 @@ class Transcode:
         self.base_url = base_url
 
     # 视频转码部分 By-@狸雪花
-    def folder_info(self):  # 获取转码文件夹信息
+    def folder_info(self, file_id):  # 获取转码文件夹信息
         url = self.base_url + "/api/v1/transcode/folder/info"
-        r = requests.post(url, headers=self.header)
+        data = {
+            "fileID": file_id
+        }
+        r = requests.post(url, headers=self.header, data=data)
         return check_status_code(r)
 
     def file_list(self, parent_file_id, limit, business_type, search_data=None, search_mode=None,
@@ -20,7 +23,7 @@ class Transcode:
         data = {
             "parentFileId": parent_file_id,
             "limit": limit,
-            "businessType": business_type,
+            "businessType": 2,
         }
         if search_data:
             data["searchData"] = search_data
@@ -29,23 +32,6 @@ class Transcode:
         if last_file_id:
             data["lastFileId"] = last_file_id
         r = requests.post(url, data=data, headers=self.header)
-        return check_status_code(r)
-
-    def get_video(self, parent_file_id, limit, searchdata=None, search_mode=None, last_file_id=None,
-                  category=2):  # 获取转码视频文件
-        url = self.base_url + "/api/v2/file/list"
-        data = {
-            "parentFileId": parent_file_id,
-            "limit": limit,
-            "category": category,
-        }
-        if searchdata:
-            data["searchData"] = searchdata
-        if search_mode:
-            data["searchMode"] = search_mode
-        if last_file_id:
-            data["lastFileId"] = last_file_id
-        r = requests.get(url, data=data, headers=self.header)
         return check_status_code(r)
 
     def from_cloud_disk(self, file_id):  # 从网盘转码
@@ -110,10 +96,10 @@ class Transcode:
         r = requests.post(url, data=data, headers=self.header)
         return check_status_code(r)
 
-    def m3u8_ts_download(self, fileid, resolution, file_type, ts_name=None):  # 转码m3u8/ts下载
+    def m3u8_ts_download(self, file_id, resolution, file_type, ts_name=None):  # 转码m3u8/ts下载
         url = self.base_url + "/api/v1/transcode/m3u8_ts/download"
         data = {
-            "fileId": fileid,
+            "fileId": file_id,
             "resolution": resolution,
             "type": file_type,
         }
@@ -122,10 +108,10 @@ class Transcode:
         r = requests.post(url, data=data, headers=self.header)
         return check_status_code(r)
 
-    def file_download_all(self, fileid, zip_name):  # 转码文件下载全部
+    def file_download_all(self, file_id, zip_name):  # 转码文件下载全部
         url = self.base_url + "/api/v1/transcode/file/download_all"
         data = {
-            "fileId": fileid,
+            "fileId": file_id,
             "zipName": zip_name,
         }
         r = requests.post(url, data=data, headers=self.header)
