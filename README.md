@@ -1,6 +1,6 @@
 <div align="center">
 
-# Pan123
+![Pan123 Logo](https://raw.githubusercontent.com/SodaCodeSave/Pan123/main/logo.svg)
 
 ![Python Version](https://img.shields.io/badge/Python-3.x-blue)
 ![GitHub License](https://img.shields.io/github/license/SodaCodeSave/Pan123?label=许可)
@@ -49,3 +49,4 @@ from pan123 import Pan123
 ### 正在编写的内容
 
 - 第三方挂载应用接入
+> 由于第三方挂载应用接入需要资质认证，所以暂不编写
