@@ -1,13 +1,13 @@
 <div align="center">
 
-![Pan123 Logo](https://raw.githubusercontent.com/SodaCodeSave/Pan123/main/logo.svg)
+# Pan123
 
 ![Python Version](https://img.shields.io/badge/Python-3.x-blue)
-![GitHub License](https://img.shields.io/github/license/SodaCodeSave/Pan123?label=许可)
+![GitHub License](https://img.shields.io/github/license/SodaCodeSave/Pan123?)
 ![GitHub Release](https://img.shields.io/github/v/release/SodaCodeSave/Pan123)
 ![PyPI - Version](https://img.shields.io/pypi/v/pan123)
 ![Stars](https://img.shields.io/github/stars/SodaCodeSave/Pan123?style=flat&label=Stars&color=yellow)
-![Build](https://img.shields.io/github/actions/workflow/status/SodaCodeSave/Pan123/python-package.yml?label=构建)
+![Build](https://img.shields.io/github/actions/workflow/status/SodaCodeSave/Pan123/python-package.yml)
 
 Pan123是123云盘开放平台的非官方Python封装库，用于在Python中与123云盘开放平台进行交互
 
