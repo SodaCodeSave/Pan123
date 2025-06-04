@@ -7,6 +7,16 @@ from .utils import ClientKeyError
 
 def get_access_token(client_id: str, client_secret: str, base_url: str = "https://open-api.123pan.com",
                      header: dict = None):
+    """
+    获取access_token
+    Args:
+        client_id (str): 获取到的client_id
+        client_secret (str): 获取到的client_secret
+        base_url (str): (可选) 123云盘API地址
+        header (dict): (可选) 自定义请求header
+    Returns:
+        str: 获取到的access_token
+    """
     # 检查header是否传入，如未传入则使用默认值
     if header is None:
         header = {"Content-Type": "application / json", "Platform": "open_platform"}

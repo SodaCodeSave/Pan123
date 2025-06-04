@@ -35,7 +35,7 @@ class OSS:
         return check_status_code(r)
 
     def mkdir(self, name: str, parent_id: int):
-        # 构造请求URL和参数
+
         url = self.base_url + "/upload/v1/oss/file/mkdir"
         data = {
             "name": name,
@@ -43,85 +43,83 @@ class OSS:
             "type": 1
         }
 
-        # 发送GET请求
         r = requests.get(url, data=data, headers=self.header)
 
-        # 将响应内容解析为JSON格式
         return check_status_code(r)
 
     def create(self, preupload_id: int, filename: str, etag: str, size: int, duplicate: int = None):
-        # 构造请求URL
+
         url = self.base_url + "/upload/v1/oss/file/create"
-        # 准备请求数据
+
         data = {
             "parentFileID": preupload_id,
-            # 文件名
+
             "filename": filename,
-            # 文件的etag
+
             "etag": etag,
-            # 文件大小
+
             "size": size,
             "type": 1
         }
-        # 如果传入了重复处理方式参数，则添加到请求数据中
+
         if duplicate:
             data["duplicate"] = duplicate
-        # 发送POST请求
+
         r = requests.post(url, data=data, headers=self.header)
-        # 将响应内容解析为JSON格式
+
         return check_status_code(r)
 
     def get_upload_url(self, preupload_id: str, slice_no: int):
-        # 构造请求URL
+
         url = self.base_url + "/upload/v1/oss/file/get_upload_url"
-        # 准备请求数据
+
         data = {
             "preuploadID": preupload_id,
             "sliceNo": slice_no
         }
-        # 发送POST请求
+
         r = requests.post(url, data=data, headers=self.header)
-        # 将响应内容解析为JSON格式
+
         return check_status_code(r)["presignedURL"]
 
     def list_upload_parts(self, preupload_id: str):
-        # 构造请求URL
+
         url = self.base_url + "/upload/v1/oss/file/list_upload_parts"
-        # 准备请求数据
+
         data = {
             "preuploadID": preupload_id
         }
-        # 发送POST请求
+
         r = requests.post(url, data=data, headers=self.header)
-        # 将响应内容解析为JSON格式
+
         return check_status_code(r)
 
     def upload_complete(self, preupload_id: str):
-        # 构造请求URL
+
         url = self.base_url + "/upload/v1/oss/file/upload_complete"
-        # 准备请求数据
+
         data = {
             "preuploadID": preupload_id
         }
-        # 发送POST请求
+
         r = requests.post(url, data=data, headers=self.header)
-        # 将响应内容解析为JSON格式
+
         return check_status_code(r)
 
     def upload_async_result(self, preupload_id: str):
-        # 构造请求URL
+
         url = self.base_url + "/upload/v1/oss/file/upload_async_result"
-        # 准备请求数据
+
         data = {
             "preuploadID": preupload_id
         }
-        # 发送POST请求
+
         r = requests.post(url, data=data, headers=self.header)
-        # 将响应内容解析为JSON格式
+
         return check_status_code(r)
 
     def upload(self, preupload_id, file_path):
-        # 一键上传文件
+
         import os
         import math
         upload_data_parts = {}
@@ -133,7 +131,7 @@ class OSS:
                 url = self.get_upload_url(f["preuploadID"], i)
                 chunk = fi.read(f["sliceSize"])
                 md5 = hashlib.md5(chunk).hexdigest()
-                # 发送Put请求
+
                 requests.put(url, data=chunk)
                 upload_data_parts[i] = {
                     "md5": md5,
@@ -150,14 +148,14 @@ class OSS:
         self.upload_complete(f["preuploadID"])
 
     def move(self, file_id_list: list, to_parent_file_id: int):
-        # 构造请求URL
+
         url = self.base_url + "/api/v1/oss/file/move"
-        # 准备请求数据
+
         data = {
             "fileIDs": file_id_list,
             "toParentFileID": to_parent_file_id
         }
-        # 发送POST请求
+
         r = requests.post(url, data=data, headers=self.header)
         return check_status_code(r)
 

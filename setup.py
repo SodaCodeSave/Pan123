@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="pan123",
-    version="0.1.7",
+    version="0.1.8",
     author="SodaCodeSave&lixuehua",
     author_email="soda_code@outlook.com",
     description="非官方的123云盘Python包",

@@ -17,7 +17,7 @@ class AccessTokenError(Exception):
 class CloudError(Exception):
     def __init__(self, r):
         self.r = r
-        super().__init__(f"{self.r["message"]}")
+        super().__init__(f"{self.r['message']}")
 
 import hashlib
 
