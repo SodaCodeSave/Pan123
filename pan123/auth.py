@@ -19,7 +19,7 @@ def get_access_token(client_id: str, client_secret: str, base_url: str = "https:
     """
     # 检查header是否传入，如未传入则使用默认值
     if header is None:
-        header = {"Content-Type": "application / json", "Platform": "open_platform"}
+        header = {"Content-Type": "application/json", "Platform": "open_platform"}
 
     # 构造请求URL
     url = base_url + "/api/v1/access_token"
