@@ -10,5 +10,5 @@ class User:
 
     def info(self):
         url = self.base_url + "/api/v1/user/info"
-        r = requests.post(url, headers=self.header)
+        r = requests.get(url, headers=self.header)
         return check_status_code(r)

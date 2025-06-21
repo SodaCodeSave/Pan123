@@ -12,9 +12,9 @@ class Pan123:
 
         # 构建请求头，包含内容类型、平台标识和用户授权信息
         self.header = {
-            "Content-Type": "application / json",
+            "Content-Type": "application/json",
             "Platform": "open_platform",
-            "Authorization": access_token
+            "Authorization": 'Bearer '+access_token
         }
 
         from .share import Share
