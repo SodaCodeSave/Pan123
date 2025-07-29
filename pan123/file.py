@@ -234,3 +234,11 @@ class File:
         else:
             data["type"] = "file"
         return data
+
+    def download(self, file_id):
+        url = self.base_url + "/api/v1/file/download_info"
+        data = {
+            "fileId": file_id
+        }
+        r = requests.post(url, data=data, headers=self.header)
+        return check_status_code(r)
