@@ -10,7 +10,8 @@ class File:
         self.header = header
         self.base_url = base_url
 
-    def v1_list(self, parent_file_id: int, page=None, limit=None, order_by=None, order_direction=None, trashed=None, search_data=None):
+    def v1_list(self, parent_file_id: int, page=None, limit=None, order_by=None, order_direction=None, trashed=None,
+                search_data=None):
         url = self.base_url + "/api/v1/file/list"
         data = {
             "parentFileId": parent_file_id
@@ -162,7 +163,8 @@ class File:
             parts = self.list_upload_parts(f["preuploadID"])
             for i in parts["parts"]:
                 part = i["partNumber"]
-                if upload_data_parts[int(part)]["md5"] == i["etag"] and upload_data_parts[int(part)]["size"] == i["size"]:
+                if upload_data_parts[int(part)]["md5"] == i["etag"] and upload_data_parts[int(part)]["size"] == i[
+                    "size"]:
                     pass
                 else:
                     raise requests.HTTPError
@@ -237,8 +239,8 @@ class File:
 
     def download(self, file_id):
         url = self.base_url + "/api/v1/file/download_info"
-        data = {
+        params = {
             "fileId": file_id
         }
-        r = requests.post(url, data=data, headers=self.header)
+        r = requests.get(url, params=params, headers=self.header)
         return check_status_code(r)
