@@ -6,7 +6,7 @@ from .utils import ClientKeyError
 
 
 def get_access_token(client_id: str, client_secret: str, base_url: str = "https://open-api.123pan.com",
-                     header: dict = None):
+                     header: dict = None): # type: ignore
     """
     获取access_token
     Args:
