@@ -4,15 +4,16 @@ from .utils import check_status_code
 
 
 class DirectLink:
-    def __init__(self, base_url, header):
+    header: dict
+    base_url: str
+
+    def __init__(self, base_url: str, header: dict) -> None:
         self.header = header
         self.base_url = base_url
 
     def query_transcode(self, ids):
         url = self.base_url + "/api/v1/direct-link/queryTranscode"
-        data = {
-            "ids": ids
-        }
+        data = {"ids": ids}
         r = requests.post(url, data=data, headers=self.header)
         return check_status_code(r)
 

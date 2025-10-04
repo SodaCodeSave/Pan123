@@ -1,50 +1,20 @@
 import json
-
 import requests
 
-from .utils import ClientKeyError
+from typing import Union
+from .utils.exceptions import ClientKeyError
+from .utils.dict_util import merge_dict
+from .utils.request import parse_response_data
 
 
-def get_access_token(client_id: str, client_secret: str, base_url: str = "https://open-api.123pan.com",
-                     header: dict = None):
-    """
-    获取access_token
-    Args:
-        client_id (str): 获取到的client_id
-        client_secret (str): 获取到的client_secret
-        base_url (str): (可选) 123云盘API地址
-        header (dict): (可选) 自定义请求header
-    Returns:
-        str: 获取到的access_token
-    """
-    # 检查header是否传入，如未传入则使用默认值
-    if header is None:
-        header = {"Content-Type": "application/json", "Platform": "open_platform"}
-
-    # 构造请求URL
+def get_access_token(
+    client_id: str,
+    client_secret: str,
+    base_url: str = "https://open-api.123pan.com",
+    header: Union[dict, None] = None,
+) -> str:
+    header = header or {"Content-Type": "application/json", "Platform": "open_platform"}
     url = base_url + "/api/v1/access_token"
-
-    # 构造请求数据
-    data = {
-        "clientID": client_id,
-        "clientSecret": client_secret
-    }
-
-    # 发送POST请求
-    r = requests.post(url, data=data, headers=header)
-
-    # 将响应内容解析为JSON格式
-    rdata = json.loads(r.text)
-
-    # 检查HTTP响应状态码
-    if r.status_code == 200:
-        # 检查API返回的code
-        if rdata["code"] == 0:
-            # 返回访问令牌
-            return rdata['data']['accessToken']
-        else:
-            # 抛出客户端密钥错误异常
-            raise ClientKeyError(rdata)
-    else:
-        # 抛出HTTP错误异常
-        raise requests.HTTPError
+    data = {"clientID": client_id, "clientSecret": client_secret}
+    response = requests.post(url, data=data, headers=header)
+    return parse_response_data(response, ClientKeyError)["accessToken"]
