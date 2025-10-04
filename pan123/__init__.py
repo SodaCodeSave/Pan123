@@ -11,17 +11,22 @@ from .offline_download import OfflineDownload
 from .direct_link import DirectLink
 from .transcode import Transcode
 from .oss import OSS
+from .utils.dict_util import merge_dict
 
 
 class Pan123(Requestable):
-    def __init__(self, access_token: str):
+    def __init__(
+        self,
+        access_token: str,
+        base_url: str = "https://open-api.123pan.com",
+        header: dict = {
+            "Content-Type": "application/json",
+            "Platform": "open_platform",
+        },
+    ):
         super().__init__(
-            "https://open-api.123pan.com",
-            {
-                "Content-Type": "application/json",
-                "Platform": "open_platform",
-                "Authorization": "Bearer " + access_token,
-            },
+            base_url,
+            merge_dict(header, {"Authorization": f"Bearer {access_token}"}),
         )
         self.share = Share(self.base_url, self.header)
         self.file = File(self.base_url, self.header)
