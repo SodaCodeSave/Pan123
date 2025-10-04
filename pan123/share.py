@@ -1,5 +1,4 @@
 import json
-
 import requests
 
 from .utils.exceptions import AccessTokenError
@@ -18,31 +17,27 @@ class Share(Requestable):
         traffic_limit_switch: bool = False,
         traffic_limit: int = 0,
     ):
-        url = self.base_url + "/api/v1/share/create"
-        data = {
+        data: dict = {
             "shareName": share_name,
             "shareExpire": share_expire,
             "fileIDList": file_id_list,
         }
         if share_pwd:
             data["sharePwd"] = share_pwd
-        data["trafficSwitch"] = bool(traffic_switch) + 1
+        data["trafficSwitch"] = bool(traffic_switch) + 1  # True=1,False=0
         data["trafficLimitSwitch"] = bool(traffic_limit_switch) + 1
         if traffic_limit_switch and traffic_limit <= 0:
             return ValueError("需要限制流量时，限制值不能为空")
-        r = requests.post(url, data=data, headers=self.header)
-        rdata = json.loads(r.text)
-        if r.status_code == 200:
-            if rdata["code"] == 0:
-                return {
-                    "shareID": rdata["data"]["shareID"],
-                    "shareLink": f"https://www.123pan.com/s/{rdata['data']['shareKey']}",
-                    "shareKey": rdata["data"]["shareKey"],
-                }
-            else:
-                raise AccessTokenError(rdata)
-        else:
-            raise requests.HTTPError
+        response = requests.post(
+            self.use_url("/api/v1/share/create"), data=data, headers=self.header
+        )
+        response_data = json.loads(response.text)
+        parse_response_data(response, AccessTokenError)
+        return {
+            "shareID": response_data["data"]["shareID"],
+            "shareLink": f"https://www.123pan.com/s/{response_data['data']['shareKey']}",
+            "shareKey": response_data["data"]["shareKey"],
+        }
 
     def list_info(
         self,
@@ -51,8 +46,7 @@ class Share(Requestable):
         traffic_limit_switch: bool = False,
         traffic_limit: int = 0,
     ):
-        url = self.base_url + "/api/v1/share/list/info"
-        data = {"shareIdList": share_id_list}
+        data: dict = {"shareIdList": share_id_list}
         if traffic_switch:
             if traffic_switch:
                 data["trafficSwitch"] = 2
@@ -67,7 +61,9 @@ class Share(Requestable):
                     return ValueError("流量限制开关为True时，流量限制不能为空")
             elif not traffic_limit_switch:
                 data["trafficLimitSwitch"] = 1
-        r = requests.put(url, data=data, headers=self.header)
+        r = requests.put(
+            self.use_url("/api/v1/share/list/info"), data=data, headers=self.header
+        )
         return parse_response_data(r)
 
     def list(self, limit: int, last_share_id: int = None):
