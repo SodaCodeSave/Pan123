@@ -24,12 +24,16 @@ class Share(Requestable):
         }
         if share_pwd:
             data["sharePwd"] = share_pwd
-        data["trafficSwitch"] = bool(traffic_switch) + 1  # True=1,False=0
-        data["trafficLimitSwitch"] = bool(traffic_limit_switch) + 1
-        if traffic_limit_switch and traffic_limit <= 0:
-            return ValueError("需要限制流量时，限制值不能为空")
+        data = Share.apply_traffic_settings(
+            data,
+            traffic_switch,
+            traffic_limit_switch,
+            traffic_limit,
+        )
         response = requests.post(
-            self.use_url("/api/v1/share/create"), data=data, headers=self.header
+            self.use_url("/api/v1/share/create"),
+            data=data,
+            headers=self.header,
         )
         response_data = json.loads(response.text)
         parse_response_data(response, AccessTokenError)
@@ -46,35 +50,40 @@ class Share(Requestable):
         traffic_limit_switch: bool = False,
         traffic_limit: int = 0,
     ):
-        data: dict = {"shareIdList": share_id_list}
-        if traffic_switch:
-            if traffic_switch:
-                data["trafficSwitch"] = 2
-            elif not traffic_switch:
-                data["trafficSwitch"] = 1
-        if traffic_limit_switch:
-            if traffic_limit_switch:
-                data["trafficLimitSwitch"] = 2
-                if traffic_limit:
-                    data["trafficLimit"] = traffic_limit
-                else:
-                    return ValueError("流量限制开关为True时，流量限制不能为空")
-            elif not traffic_limit_switch:
-                data["trafficLimitSwitch"] = 1
-        r = requests.put(
-            self.use_url("/api/v1/share/list/info"), data=data, headers=self.header
+        data: dict = Share.apply_traffic_settings(
+            {"shareIdList": share_id_list},
+            traffic_switch,
+            traffic_limit_switch,
+            traffic_limit,
         )
-        return parse_response_data(r)
+        return parse_response_data(
+            requests.put(
+                self.use_url("/api/v1/share/list/info"),
+                data=data,
+                headers=self.header,
+            )
+        )
 
-    def list(self, limit: int, last_share_id: int = None):
-
-        url = self.base_url + "/api/v1/share/list"
-
+    def list(self, limit: int, last_share_id: int = 0):
         data = {"limit": limit}
-
         if last_share_id:
             data["lastShareId"] = last_share_id
+        return parse_response_data(
+            requests.get(
+                self.use_url("/api/v1/share/list"), data=data, headers=self.header
+            )
+        )
 
-        r = requests.get(url, data=data, headers=self.header)
-
-        return check_status_code(r)
+    @staticmethod
+    def apply_traffic_settings(
+        data: dict,
+        traffic_switch: bool = False,
+        traffic_limit_switch: bool = False,
+        traffic_limit: int = 0,
+    ) -> dict:
+        data = data.copy()
+        data["trafficSwitch"] = bool(traffic_switch) + 1  # True=1,False=0
+        data["trafficLimitSwitch"] = bool(traffic_limit_switch) + 1
+        if traffic_limit_switch and traffic_limit <= 0:
+            raise ValueError("需要限制流量时，限制值必须大于0")
+        return data

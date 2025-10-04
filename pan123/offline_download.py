@@ -1,31 +1,37 @@
 import requests
 
-from .utils import check_status_code
+from .utils.request import parse_response_data
+from .abstracts import Requestable
 
 
-class OfflineDownload:
-    def __init__(self, base_url, header):
-        self.header = header
-        self.base_url = base_url
-
-    def download(self, download_url, file_name=None, save_path=None, call_back_url=None):
-        url = self.base_url + "/api/v1/offline/download"
-        data = {
-            "url": download_url
-        }
+class OfflineDownload(Requestable):
+    def download(
+        self,
+        download_url: str,
+        file_name: str = "",
+        save_path: str = "",
+        call_back_url: str = "",
+    ):
+        data = {"url": download_url}
         if file_name:
             data["fileName"] = file_name
         if save_path:
             data["savePath"] = save_path
         if call_back_url:
             data["callBackUrl"] = call_back_url
-        r = requests.post(url, data=data, headers=self.header)
-        return check_status_code(r)
+        return parse_response_data(
+            requests.post(
+                self.use_url("/api/v1/offline/download"),
+                data=data,
+                headers=self.header,
+            )
+        )
 
     def download_process(self, task_id):
-        url = self.base_url + "/api/v1/offline/download/process"
-        data = {
-            "taskID": task_id
-        }
-        r = requests.post(url, data=data, headers=self.header)
-        return check_status_code(r)
+        return parse_response_data(
+            requests.post(
+                self.use_url("/api/v1/offline/download/process"),
+                data={"taskID": task_id},
+                headers=self.header,
+            )
+        )
