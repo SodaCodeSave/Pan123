@@ -1,26 +1,29 @@
 import requests
 
-from .utils import check_status_code
+from .utils.request import parse_response_data
+from .abstracts import Requestable
+from .costants import SearchMode, VideoFileType
 
 
-class Transcode:
-    def __init__(self, base_url, header):
-        self.header = header
-        self.base_url = base_url
+class Transcode(Requestable):
+    def folder_info(self, file_id: int) -> dict:
+        return parse_response_data(
+            requests.post(
+                self.use_url("/api/v1/transcode/folder/info"),
+                headers=self.header,
+                data={"fileID": file_id},
+            )
+        )
 
-    # 视频转码部分 By-@狸雪花
-    def folder_info(self, file_id):  # 获取转码文件夹信息
-        url = self.base_url + "/api/v1/transcode/folder/info"
-        data = {
-            "fileID": file_id
-        }
-        r = requests.post(url, headers=self.header, data=data)
-        return check_status_code(r)
-
-    def file_list(self, parent_file_id, limit, business_type, search_data=None, search_mode=None,
-                  last_file_id=None):  # 获取转码文件列表
-        url = self.base_url + "/api/v2/file/list"
-        data = {
+    def file_list(
+        self,
+        parent_file_id: int,
+        limit: int,
+        search_data: str = "",
+        search_mode: SearchMode = SearchMode.NORMAL,
+        last_file_id: int = 0,
+    ) -> list[dict]:
+        data: dict = {
             "parentFileId": parent_file_id,
             "limit": limit,
             "businessType": 2,
@@ -31,89 +34,122 @@ class Transcode:
             data["searchMode"] = search_mode
         if last_file_id:
             data["lastFileId"] = last_file_id
-        r = requests.post(url, data=data, headers=self.header)
-        return check_status_code(r)
+        return parse_response_data(
+            requests.post(
+                self.use_url("/api/v2/file/list"),
+                data=data,
+                headers=self.header,
+            )
+        )
 
-    def from_cloud_disk(self, file_id):  # 从网盘转码
-        url = self.base_url + "/api/v1/transcode/upload/from_cloud_disk"
+    def from_cloud_disk(self, file_id: int):
+        return parse_response_data(
+            requests.post(
+                self.use_url("/api/v1/transcode/upload/from_cloud_disk"),
+                data={"fileId": file_id},
+                headers=self.header,
+            )
+        )
+
+    def delete(self, file_id: int, original: bool = False, transcoded: bool = False):
+        return parse_response_data(
+            requests.post(
+                self.use_url("/api/v1/transcode/delete"),
+                data={
+                    "fileId": file_id,
+                    "businessType": 2,
+                    "trashed": original + transcoded,
+                },
+                headers=self.header,
+            )
+        )
+
+    def video_resolution(self, file_id: int):
+        return parse_response_data(
+            requests.post(
+                self.use_url("/api/v1/transcode/video/resolution"),
+                data={"fileId": file_id},
+                headers=self.header,
+            )
+        )
+
+    def video(
+        self,
+        file_id: int,
+        codec_name: str,
+        video_time: str,
+        resolutions: list[int],
+    ):
+        return parse_response_data(
+            requests.post(
+                self.use_url("/api/v1/transcode/video"),
+                data={
+                    "fileId": file_id,
+                    "codecName": codec_name,
+                    "videoTime": video_time,
+                    "resolutions": ",".join(map(lambda x: f"{x}P", resolutions)),
+                },
+                headers=self.header,
+            )
+        )
+
+    def video_record(self, file_id: int):
+        return parse_response_data(
+            requests.post(
+                self.use_url("/api/v1/transcode/video/record"),
+                data={"fileId": file_id},
+                headers=self.header,
+            )
+        )
+
+    def video_result(self, file_id: int):
+        return parse_response_data(
+            requests.post(
+                self.use_url("/api/v1/transcode/video/result"),
+                data={"fileId": file_id},
+                headers=self.header,
+            )
+        )
+
+    def file_download(self, file_id: int):
+        return parse_response_data(
+            requests.post(
+                self.use_url("/api/v1/transcode/file/download"),
+                data={"fileId": file_id},
+                headers=self.header,
+            )
+        )
+
+    def m3u8_ts_download(
+        self,
+        file_id: int,
+        resolution: int,
+        file_type: VideoFileType,
+        ts_name: str = "",
+    ):
         data = {
             "fileId": file_id,
-        }
-        r = requests.post(url, data=data, headers=self.header)
-        return check_status_code(r)
-
-    def delete(self, file_id, business_type, trashed):  # 删除转码文件
-        url = self.base_url + "/api/v1/transcode/delete"
-        data = {
-            "fileId": file_id,
-            "businessType": business_type,
-            "trashed": trashed,
-        }
-        r = requests.post(url, data=data, headers=self.header)
-        return check_status_code(r)
-
-    def video_resolution(self, file_id):  # 获取转码视频分辨率
-        url = self.base_url + "/api/v1/transcode/video/resolution"
-        data = {
-            "fileId": file_id,
-        }
-        r = requests.post(url, data=data, headers=self.header)
-        return check_status_code(r)
-
-    def video(self, file_id, codec_name, video_time, resolutions):  # 转码视频
-        url = self.base_url + "/api/v1/transcode/video"
-        data = {
-            "fileId": file_id,
-            "codecName": codec_name,
-            "videoTime": video_time,
-            "resolutions": resolutions,
-        }
-        r = requests.post(url, data=data, headers=self.header)
-        return check_status_code(r)
-
-    # 嗷呜，我是一只小猫咪，喵喵喵！
-    def video_record(self, file_id):  # 转码视频记录
-        url = self.base_url + "/api/v1/transcode/video/record"
-        data = {
-            "fileId": file_id,
-        }
-        r = requests.post(url, data=data, headers=self.header)
-        return check_status_code(r)
-
-    def video_result(self, file_id):  # 转码视频结果
-        url = self.base_url + "/api/v1/transcode/video/result"
-        data = {
-            "fileId": file_id,
-        }
-        r = requests.post(url, data=data, headers=self.header)
-        return check_status_code(r)
-
-    def file_download(self, file_id):  # 转码文件下载
-        url = self.base_url + "/api/v1/transcode/file/download"
-        data = {
-            "fileId": file_id,
-        }
-        r = requests.post(url, data=data, headers=self.header)
-        return check_status_code(r)
-
-    def m3u8_ts_download(self, file_id, resolution, file_type, ts_name=None):  # 转码m3u8/ts下载
-        url = self.base_url + "/api/v1/transcode/m3u8_ts/download"
-        data = {
-            "fileId": file_id,
-            "resolution": resolution,
+            "resolution": f"{resolution}P",
             "type": file_type,
         }
         if ts_name:
             data["tsName"] = ts_name
-        r = requests.post(url, data=data, headers=self.header)
-        return check_status_code(r)
+        return parse_response_data(
+            requests.post(
+                self.use_url("/api/v1/transcode/m3u8_ts/download"),
+                data=data,
+                headers=self.header,
+            )
+        )
 
-    def file_download_all(self, file_id, zip_name):  # 转码文件下载全部
-        url = self.base_url + "/api/v1/transcode/file/download_all"
-        data = {
-            "fileId": file_id,
-            "zipName": zip_name,
-        }
-        r = requests.post(url, data=data, headers=self.header)
-        return check_status_code(r)
-    # 嗷呜，视频转码完成，喵喵喵！
+    def file_download_all(self, file_id: int, zip_name: str):
+        return parse_response_data(
+            requests.post(
+                self.use_url("/api/v1/transcode/file/download_all"),
+                data={
+                    "fileId": file_id,
+                    "zipName": zip_name,
+                },
+                headers=self.header,
+            )
+        )
