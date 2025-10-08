@@ -1,6 +1,6 @@
 import requests
 
-from .utils import check_status_code
+from .utils import check_status_code, is_valid_url, UrlError
 
 
 class OfflineDownload:
@@ -10,6 +10,8 @@ class OfflineDownload:
 
     def download(self, download_url, file_name=None, save_path=None, call_back_url=None):
         url = self.base_url + "/api/v1/offline/download"
+        if not is_valid_url(download_url):
+            raise UrlError(download_url)
         data = {
             "url": download_url
         }

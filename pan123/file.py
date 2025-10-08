@@ -68,7 +68,7 @@ class File:
         # 将响应内容解析为JSON格式
         return check_status_code(r)
 
-    def create(self, parent_file_id: int, filename: str, etag: str, size: int, duplicate: int = None):
+    def create(self, parent_file_id: int, filename: str, etag: str, size: int, duplicate: int = None): # type: ignore
         # 构造请求URL
         url = self.base_url + "/upload/v1/file/create"
         # 准备请求数据
