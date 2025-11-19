@@ -45,7 +45,7 @@ class File(Requestable):
         parent_file_id: int,
         limit: int,
         search_data: str = "",
-        search_mode: SearchMode = SearchMode.NORMAL,
+        search_mode: SearchMode.value = SearchMode.NORMAL.value,
         last_file_id: int = 0,
     ):
         data: dict = {"parentFileId": parent_file_id, "limit": limit}
