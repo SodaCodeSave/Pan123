@@ -52,7 +52,7 @@ class File(Requestable):
         if search_data:
             data["searchData"] = search_data
         if search_mode:
-            data["searchMode"] = search_mode
+            data["searchMode"] = search_mode.value
         if last_file_id:
             data["lastFileID"] = last_file_id
         return parse_response_data(
