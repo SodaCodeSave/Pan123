@@ -87,7 +87,7 @@ class File(Requestable):
             "size": size,
         }
         if duplicate:
-            data["duplicate"] = duplicate
+            data["duplicate"] = duplicate.value
         return parse_response_data(
             requests.post(
                 self.use_url("/upload/v1/file/create"),

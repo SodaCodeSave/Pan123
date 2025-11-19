@@ -1,0 +1,53 @@
+name: Auto Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'setup.py'
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version_changed: ${{ steps.version_check.outputs.changed }}
+      new_version: ${{ steps.version_check.outputs.new_version }}
+      previous_version: ${{ steps.version_check.outputs.previous_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Check version change
+        id: version_check
+        run: |
+          python scripts/check_version_change.py
+
+  create-release:
+    needs: check-version
+    runs-on: ubuntu-latest
+    if: needs.check-version.outputs.version_changed == 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ needs.check-version.outputs.new_version }}
+          release_name: Release v${{ needs.check-version.outputs.new_version }}
+          body: |
+            Release v${{ needs.check-version.outputs.new_version }}
+
+            ## Changes
+            - Updated version in setup.py from ${{ needs.check-version.outputs.previous_version }} to ${{ needs.check-version.outputs.new_version }}
+          draft: false
+          prerelease: false
