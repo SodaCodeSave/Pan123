@@ -65,7 +65,7 @@ class File(Requestable):
 
     def mkdir(self, name: str, parent_id: int):
         return parse_response_data(
-            requests.get(
+            requests.post(
                 self.use_url("/upload/v1/file/mkdir"),
                 data={"name": name, "parentID": parent_id},
                 headers=self.header,
