@@ -34,7 +34,7 @@ from pan123 import Pan123
 
 ### 文档
 
-**[Pan123 文档](https://sodacodesave.github.io/Pan123-Docs/site/)**
+**[Pan123 Github Wiki](https://github.com/SodaCodeSave/Pan123/wiki)**
 
 ### 已经实现的内容
 
