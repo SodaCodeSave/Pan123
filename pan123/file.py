@@ -399,4 +399,4 @@ class File(Requestable):
                 data={"fileID": file_id},
                 headers=self.header,
             )
-        )["downloadURL"]
+        )

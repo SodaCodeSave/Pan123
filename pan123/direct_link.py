@@ -114,8 +114,17 @@ class DirectLink(Requestable):
             
         Returns:
             直链链接信息
+
         """
-        return self.doPost("url", {"fileID": file_id})
+        url = "url"
+        data = {"fileID": file_id}
+        return parse_response_data(
+            requests.get(
+                self.use_url(f"/api/v1/direct-link/{url}"),
+                data=data,
+                headers=self.header,
+            )
+        )
 
     def forbid_ip_switch(self, switch: bool):
         """
@@ -149,4 +158,4 @@ class DirectLink(Requestable):
         Returns:
             IP黑名单列表和当前设置状态
         """
-        return self.doForbidIpPost("list", {})
+        return self.doForbidIpPost("list", {}) 

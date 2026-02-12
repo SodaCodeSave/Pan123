@@ -15,8 +15,8 @@ class Share(Requestable):
         share_expire: int,
         file_id_list: list,
         share_pwd: str = "",
-        traffic_switch: bool = False,
-        traffic_limit_switch: bool = False,
+        traffic_switch: int = 1,
+        traffic_limit_switch: int = 1,
         traffic_limit: int = 0,
     ):
         """
@@ -38,15 +38,12 @@ class Share(Requestable):
             "shareName": share_name,
             "shareExpire": share_expire,
             "fileIDList": file_id_list,
+            "trafficSwitch": traffic_switch,
+            "trafficLimitSwitch": traffic_limit_switch,
+            "trafficLimit": traffic_limit,
         }
         if share_pwd:
             data["sharePwd"] = share_pwd
-        data = Share.apply_traffic_settings(
-            data,
-            traffic_switch,
-            traffic_limit_switch,
-            traffic_limit,
-        )
         response = requests.post(
             self.use_url("/api/v1/share/create"),
             data=data,
