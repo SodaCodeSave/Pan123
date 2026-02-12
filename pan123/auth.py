@@ -6,6 +6,9 @@ from .abstracts import Requestable
 
 
 class Auth(Requestable):
+    """
+    认证管理对象，专门用于获取 Access Token
+    """
     def get_access_token(
         self,
         client_id: str,
@@ -18,4 +21,4 @@ class Auth(Requestable):
                 headers=self.header,
             ),
             ClientKeyError,
-        )["accessToken"]
+        )
